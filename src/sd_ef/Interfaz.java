@@ -5,7 +5,13 @@
  */
 package sd_ef;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 
 /**
  *
@@ -16,10 +22,18 @@ public class Interfaz extends javax.swing.JFrame {
     private DefaultListModel inicializarJList;
     private int numeroDeProceso;
     private int numeroDeMensaje = 1;
-    private int[] relojLogico;
+    private int[] relojLogico= {0,0,0,0,0,0};
+    private int puertoEnvia;
     private int puerto;
     private String direccionIP;
     private String textoMensaje;
+    private ArrayList<Mensaje> mensajesEspera = new ArrayList();
+    private ArrayList<Mensaje> mensajesEntregado = new ArrayList();
+    private ArrayList<Mensaje> mensajesCreado = new ArrayList();
+    private ArrayList<Integer> CI = new ArrayList();
+    
+    
+    
 
     public int getNumeroDeProceso() {
         return numeroDeProceso;
@@ -29,13 +43,27 @@ public class Interfaz extends javax.swing.JFrame {
         this.numeroDeProceso = numeroDeProceso;
     }
 
+    public int getPuerto() {
+        return puerto;
+    }
+
+    public void setPuerto(int puerto) {
+        this.puerto = puerto;
+    }
+    
+
     /**
      * Creates new form Interfaz
      */
     public Interfaz() {
         initComponents();
         inicializarJList = new DefaultListModel();
+        this.idProceso.setText(Integer.toString(numeroDeProceso));
 
+    }
+
+    public void setIdProceso(int perro) {
+        this.idProceso.setText(Integer.toString(perro));
     }
 
     /**
@@ -73,7 +101,7 @@ public class Interfaz extends javax.swing.JFrame {
         proceso5 = new javax.swing.JButton();
         proceso6 = new javax.swing.JButton();
         numeroProceso = new javax.swing.JLabel();
-        numeroProcesoTF = new javax.swing.JTextField();
+        idProceso = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -160,11 +188,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         numeroProceso.setText("Numero Proceso");
 
-        numeroProcesoTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numeroProcesoTFActionPerformed(evt);
-            }
-        });
+        idProceso.setText("jLabel8");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -211,8 +235,8 @@ public class Interfaz extends javax.swing.JFrame {
                                 .addComponent(proceso6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(numeroProceso)
-                        .addGap(40, 40, 40)
-                        .addComponent(numeroProcesoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(idProceso)))
                 .addContainerGap(604, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -246,11 +270,11 @@ public class Interfaz extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(80, 80, 80)
+                        .addGap(83, 83, 83)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(numeroProceso)
-                            .addComponent(numeroProcesoTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(68, 68, 68)
+                            .addComponent(idProceso))
+                        .addGap(71, 71, 71)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -268,70 +292,79 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+
     private void proceso2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso2ActionPerformed
         // TODO add your handling code here:
+        direccionIP = "localhost";
+        puertoEnvia = 20002;        
+        Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso2ActionPerformed
 
     private void bCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCrearActionPerformed
         // TODO add your handling code here:
         textoMensaje = textoMensajeTF.getText();
-        numeroDeProceso = Integer.parseInt(numeroProcesoTF.getText());
-        Mensaje m = new Mensaje(textoMensaje, numeroDeProceso, numeroDeMensaje);
+        numeroDeProceso = Integer.parseInt(idProceso.getText());
+        Mensaje m = new Mensaje(textoMensaje, numeroDeProceso, numeroDeMensaje, CI);        
+        //System.out.println("Mensaje Creado: " + numeroDeProceso + " " + numeroDeMensaje + " " + textoMensaje);
         numeroDeMensaje++;
         inicializarJList.addElement(m.toString());
         creadosList.setModel(inicializarJList);
-
-        /* Ejemplo Switch - aprenderaprogramar.com */
-        switch (numeroDeProceso) {
-            case 1:
-                puerto = 20001;
-                break;
-            case 2:
-                puerto = 20002;
-                break;
-            case 3:
-                puerto = 20003;
-                break;
-            case 4:
-                puerto = 20004;
-                break;
-            case 5:
-                puerto = 20005;
-                break;
-            case 6:
-                puerto = 20006;
-                break;
-
-        }
-        System.out.println(puerto + " " + numeroDeProceso);
+        relojLogico[numeroDeProceso-1] ++;
+        CI.clear();
         
-        // System.out.println(textoMensaje+" "+numeroDeProceso);
+        
+
+        
+        //System.out.println(puerto + " " + numeroDeProceso);
+        
         
     }//GEN-LAST:event_bCrearActionPerformed
 
     private void proceso1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso1ActionPerformed
         // TODO add your handling code here:
+        direccionIP = "localhost";
+        puertoEnvia = 20001;
+        Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso1ActionPerformed
 
     private void proceso5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso5ActionPerformed
         // TODO add your handling code here:
+        direccionIP = "localhost";
+        puertoEnvia = 20005;
+        Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso5ActionPerformed
 
     private void proceso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso3ActionPerformed
         // TODO add your handling code here:
+        direccionIP = "localhost";
+        puertoEnvia = 20003;
+        Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso3ActionPerformed
 
     private void proceso4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso4ActionPerformed
         // TODO add your handling code here:
+        direccionIP = "localhost";
+        puertoEnvia = 20004;
+        Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso4ActionPerformed
 
     private void proceso6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso6ActionPerformed
         // TODO add your handling code here:
+        direccionIP = "localhost";
+        puertoEnvia = 20006;
+        Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso6ActionPerformed
+public void Enviar(String mensaje){
+    Comunicacion comunicar = new Comunicacion(mensaje);
+    comunicar.Enviar(direccionIP, puertoEnvia);
+}
 
-    private void numeroProcesoTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroProcesoTFActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_numeroProcesoTFActionPerformed
+public void Recibir(){
+    Comunicacion comunicar2 = new Comunicacion();
+    comunicar2.Recibir(puerto);
+    
+}
 
     /**
      * @param args the command line arguments
@@ -374,6 +407,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JList<String> creadosList;
     private javax.swing.JTextArea entregadosTA;
     private javax.swing.JTextArea esperaTA;
+    private javax.swing.JLabel idProceso;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -387,7 +421,6 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel numeroProceso;
-    private javax.swing.JTextField numeroProcesoTF;
     private javax.swing.JButton proceso1;
     private javax.swing.JButton proceso2;
     private javax.swing.JButton proceso3;
