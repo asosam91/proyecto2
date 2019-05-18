@@ -28,14 +28,6 @@ private String mensaje;
         
     }
 
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
-
     public void Enviar(String ip, int puerto) {
         System.out.println("Estoy enviando esto: " + mensaje);
         try {

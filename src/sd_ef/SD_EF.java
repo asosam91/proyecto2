@@ -20,13 +20,7 @@ public class SD_EF {
         // TODO code application logic here
         int puerto=0;
         int numeroDeProceso;
-        numeroDeProceso = Integer.parseInt(JOptionPane.showInputDialog("Ingresa el numero de proceso para asignar un puerto \n"
-                                                                        + "1 - 20001\n"  
-                                                                        + "2 - 20002\n" 
-                                                                        + "3 - 20003\n"
-                                                                        + "4 - 20004\n"
-                                                                        + "5 - 20005\n"
-                                                                        + "6 - 20006"));
+        numeroDeProceso = Integer.parseInt(JOptionPane.showInputDialog("Ingresa el numero de proceso que deceas ejecutar"));
 //      
         
         switch (numeroDeProceso) {
@@ -51,7 +45,8 @@ public class SD_EF {
 
         }
         Interfaz i = new Interfaz();
-      
+        i.setNumeroDeProceso(numeroDeProceso);
+        i.setIdProceso(numeroDeProceso);
         i.setVisible(true);
         i.setPuerto(puerto);
         i.Recibir();

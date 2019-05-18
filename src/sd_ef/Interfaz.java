@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 
 /**
  *
@@ -20,11 +22,18 @@ public class Interfaz extends javax.swing.JFrame {
     private DefaultListModel inicializarJList;
     private int numeroDeProceso;
     private int numeroDeMensaje = 1;
-    private int[] relojLogico;
+    private int[] relojLogico= {0,0,0,0,0,0};
     private int puertoEnvia;
     private int puerto;
     private String direccionIP;
     private String textoMensaje;
+    private ArrayList<Mensaje> mensajesEspera = new ArrayList();
+    private ArrayList<Mensaje> mensajesEntregado = new ArrayList();
+    private ArrayList<Mensaje> mensajesCreado = new ArrayList();
+    private ArrayList<Integer> CI = new ArrayList();
+    
+    
+    
 
     public int getNumeroDeProceso() {
         return numeroDeProceso;
@@ -49,7 +58,12 @@ public class Interfaz extends javax.swing.JFrame {
     public Interfaz() {
         initComponents();
         inicializarJList = new DefaultListModel();
+        this.idProceso.setText(Integer.toString(numeroDeProceso));
 
+    }
+
+    public void setIdProceso(int perro) {
+        this.idProceso.setText(Integer.toString(perro));
     }
 
     /**
@@ -87,7 +101,7 @@ public class Interfaz extends javax.swing.JFrame {
         proceso5 = new javax.swing.JButton();
         proceso6 = new javax.swing.JButton();
         numeroProceso = new javax.swing.JLabel();
-        numeroProcesoTF = new javax.swing.JTextField();
+        idProceso = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -172,13 +186,11 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+        numeroProceso.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         numeroProceso.setText("Numero Proceso");
 
-        numeroProcesoTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numeroProcesoTFActionPerformed(evt);
-            }
-        });
+        idProceso.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        idProceso.setText("jLabel8");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,112 +200,110 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(176, 176, 176))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1)
-                                .addGap(54, 54, 54)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(54, 54, 54)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jScrollPane4)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(textoMensajeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addGap(41, 41, 41)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(33, 33, 33)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel6)
+                                                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(34, 34, 34)
+                                                .addComponent(jLabel5))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(148, 148, 148)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel4)
+                                            .addComponent(textoMensajeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(bCrear)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(proceso1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(bCrear))
-                            .addComponent(jScrollPane5)))
+                                .addComponent(proceso2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(proceso3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(proceso4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(proceso5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(proceso6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(9, 37, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(54, 54, 54)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
+                            .addComponent(jLabel2)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(146, 146, 146)
                                 .addComponent(numeroProceso)
-                                .addGap(36, 36, 36)
-                                .addComponent(numeroProcesoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(proceso1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                                    .addComponent(proceso4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(proceso2, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                                    .addComponent(proceso5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(proceso3, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                                    .addComponent(proceso6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-                .addContainerGap(35, Short.MAX_VALUE))
+                                .addGap(26, 26, 26)
+                                .addComponent(idProceso)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(30, 30, 30)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(30, 30, 30)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(textoMensajeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bCrear))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(36, 36, 36)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
                     .addComponent(numeroProceso)
-                    .addComponent(numeroProcesoTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idProceso))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel7)
+                        .addComponent(textoMensajeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(proceso3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(proceso6))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(proceso1)
-                                    .addComponent(proceso2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(proceso4)
-                                    .addComponent(proceso5))))))
-                .addContainerGap(31, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(bCrear))
+                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(proceso1)
+                    .addComponent(proceso3)
+                    .addComponent(proceso2)
+                    .addComponent(proceso4)
+                    .addComponent(proceso5)
+                    .addComponent(proceso6))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+
     private void proceso2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso2ActionPerformed
         // TODO add your handling code here:
-        direccionIP = "localhost";
+        direccionIP = "192.168.1.244";
         puertoEnvia = 20002;        
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso2ActionPerformed
@@ -301,12 +311,16 @@ public class Interfaz extends javax.swing.JFrame {
     private void bCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCrearActionPerformed
         // TODO add your handling code here:
         textoMensaje = textoMensajeTF.getText();
-        numeroDeProceso = Integer.parseInt(numeroProcesoTF.getText());
-        Mensaje m = new Mensaje(textoMensaje, numeroDeProceso, numeroDeMensaje);        
-        System.out.println("Mensaje Creado: " + numeroDeProceso + " " + numeroDeMensaje + " " + textoMensaje);
+        numeroDeProceso = Integer.parseInt(idProceso.getText());
+        Mensaje m = new Mensaje(textoMensaje, numeroDeProceso, numeroDeMensaje, CI);        
+        //System.out.println("Mensaje Creado: " + numeroDeProceso + " " + numeroDeMensaje + " " + textoMensaje);
         numeroDeMensaje++;
         inicializarJList.addElement(m.toString());
         creadosList.setModel(inicializarJList);
+        relojLogico[numeroDeProceso-1] ++;
+        CI.clear();
+        imprimirCI(CI);
+        
 
         
         //System.out.println(puerto + " " + numeroDeProceso);
@@ -316,7 +330,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void proceso1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso1ActionPerformed
         // TODO add your handling code here:
-        direccionIP = "localhost";
+        direccionIP = "192.168.1.83";
         puertoEnvia = 20001;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso1ActionPerformed
@@ -348,15 +362,23 @@ public class Interfaz extends javax.swing.JFrame {
         puertoEnvia = 20006;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso6ActionPerformed
-
-    private void numeroProcesoTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroProcesoTFActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_numeroProcesoTFActionPerformed
 public void Enviar(String mensaje){
     Comunicacion comunicar = new Comunicacion(mensaje);
     comunicar.Enviar(direccionIP, puertoEnvia);
 }
+public void imprimirCI(ArrayList<Integer> ci) {
+    String c = "";
+        if (ci.isEmpty()) {
+            CITA.append("0");
+            CITA.append(System.getProperty("line.separator"));
+        }
+        for (int i = 0; i < ci.size(); i++) {
+            c = c + "," + ci.get(i);
+        }
 
+        CITA.append(c);
+        CITA.append(System.getProperty("line.separator"));
+}
 public void Recibir(){
     Comunicacion comunicar2 = new Comunicacion();
     comunicar2.Recibir(puerto);
@@ -404,6 +426,7 @@ public void Recibir(){
     private javax.swing.JList<String> creadosList;
     private javax.swing.JTextArea entregadosTA;
     private javax.swing.JTextArea esperaTA;
+    private javax.swing.JLabel idProceso;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -417,7 +440,6 @@ public void Recibir(){
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel numeroProceso;
-    private javax.swing.JTextField numeroProcesoTF;
     private javax.swing.JButton proceso1;
     private javax.swing.JButton proceso2;
     private javax.swing.JButton proceso3;
