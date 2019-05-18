@@ -389,6 +389,13 @@ public void imprimirVT(){
     this.relojLogicoTA.append(System.getProperty("line.separator"));
     vt = "";
 }
+public void imprimirEntrega(ArrayList<Mensaje> x){
+    this.entregadosTA.setText("");
+    for (int i = 0; i < x.size(); i++) {
+        this.entregadosTA.append(x.get(i).getNumeroDeProceso() + "," + x.get(i).getNumeroDeMensaje() + "," + x.get(i).getTextoMensaje() + "," + x.get(i).getHM());
+        this.entregadosTA.append(System.getProperty("line.separator"));
+    } 
+}
 public void Recibir(){
     Comunicacion comunicar2 = new Comunicacion();
     comunicar2.Recibir(puerto);

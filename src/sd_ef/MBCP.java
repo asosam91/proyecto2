@@ -5,6 +5,7 @@
  */
 package sd_ef;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.DefaultListModel;
 
@@ -13,11 +14,11 @@ import javax.swing.DefaultListModel;
  * @author adria
  */
 public class MBCP {
-    private CopyOnWriteArrayList<mensaje> mensajes_creado = new CopyOnWriteArrayList<mensaje>();
-    private CopyOnWriteArrayList<mensaje> mensajes_recibidos = new CopyOnWriteArrayList<mensaje>();
-    private CopyOnWriteArrayList<mensaje> mensajes_espera = new CopyOnWriteArrayList<mensaje>();
-    private CopyOnWriteArrayList<Integer> ci = new CopyOnWriteArrayList<Integer>();
-    private CopyOnWriteArrayList<Integer> cic = new CopyOnWriteArrayList<Integer>();
+    private ArrayList<Mensaje> mensajes_creado = new ArrayList<Mensaje>();
+    private ArrayList<Mensaje> mensajes_recibidos = new ArrayList<Mensaje>();
+    private ArrayList<Mensaje> mensajes_espera = new ArrayList<Mensaje>();
+    private ArrayList<Integer> ci = new ArrayList<Integer>();
+    private ArrayList<Integer> cic = new ArrayList<Integer>();
     
 private int[] vt = {0, 0, 0, 0, 0, 0};
 private String datos;

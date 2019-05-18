@@ -16,6 +16,39 @@ public class Mensaje {
     private int numeroDeProceso;
     private int numeroDeMensaje;
     private ArrayList<Integer> HM = new ArrayList();
+
+    public String getTextoMensaje() {
+        return textoMensaje;
+    }
+
+    public void setTextoMensaje(String textoMensaje) {
+        this.textoMensaje = textoMensaje;
+    }
+
+    public ArrayList<Integer> getHM() {
+        return HM;
+    }
+
+    public void setHM(ArrayList<Integer> HM) {
+        this.HM = HM;
+    }
+
+    public int getNumeroDeProceso() {
+        return numeroDeProceso;
+    }
+
+    public void setNumeroDeProceso(int numeroDeProceso) {
+        this.numeroDeProceso = numeroDeProceso;
+    }
+
+    public int getNumeroDeMensaje() {
+        return numeroDeMensaje;
+    }
+
+    public void setNumeroDeMensaje(int numeroDeMensaje) {
+        this.numeroDeMensaje = numeroDeMensaje;
+    }
+
    
 
     public Mensaje(String textoMensaje, int numeroDeProceso, int numeroDeMensaje, ArrayList<Integer> HM) {
