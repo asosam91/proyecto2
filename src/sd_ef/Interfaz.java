@@ -27,6 +27,7 @@ public class Interfaz extends javax.swing.JFrame {
     private int puerto;
     private String direccionIP;
     private String textoMensaje;
+    private String vt = "";
     private ArrayList<Mensaje> mensajesEspera = new ArrayList();
     private ArrayList<Mensaje> mensajesEntregado = new ArrayList();
     private ArrayList<Mensaje> mensajesCreado = new ArrayList();
@@ -320,6 +321,7 @@ public class Interfaz extends javax.swing.JFrame {
         relojLogico[numeroDeProceso-1] ++;
         CI.clear();
         imprimirCI(CI);
+        imprimirVT();
         
 
         
@@ -378,6 +380,14 @@ public void imprimirCI(ArrayList<Integer> ci) {
 
         CITA.append(c);
         CITA.append(System.getProperty("line.separator"));
+}
+public void imprimirVT(){
+    for (int i = 0; i < relojLogico.length; i++) {
+        vt = vt +", " + relojLogico[i];        
+    }
+    this.relojLogicoTA.append(vt);
+    this.relojLogicoTA.append(System.getProperty("line.separator"));
+    vt = "";
 }
 public void Recibir(){
     Comunicacion comunicar2 = new Comunicacion();
