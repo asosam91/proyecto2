@@ -23,9 +23,7 @@ private String mensaje;
     public Comunicacion(String mensaje) {
         this.mensaje=mensaje;
     }
-    public Comunicacion ()
-    {
-        
+    public Comunicacion (){        
     }
 
     public void Enviar(String ip, int puerto) {
@@ -69,6 +67,5 @@ private String mensaje;
                 System.out.println("IO: " + e.getMessage());
             }
         }
-    
-}
+    }
 }
