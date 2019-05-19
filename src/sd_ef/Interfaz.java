@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sd_ef;
 
 import java.io.IOException;
@@ -10,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 
@@ -33,9 +29,6 @@ public class Interfaz extends javax.swing.JFrame {
     private ArrayList<Mensaje> mensajesCreado = new ArrayList();
     private ArrayList<Integer> CI = new ArrayList();
     
-    
-    
-
     public int getNumeroDeProceso() {
         return numeroDeProceso;
     }
@@ -52,17 +45,11 @@ public class Interfaz extends javax.swing.JFrame {
         this.puerto = puerto;
     }
     
-
-    /**
-     * Creates new form Interfaz
-     */
     public Interfaz() {
         initComponents();
         inicializarJList = new DefaultListModel();
         this.idProceso.setText(Integer.toString(numeroDeProceso));
-
     }
-
     public void setIdProceso(int perro) {
         this.idProceso.setText(Integer.toString(perro));
     }
@@ -300,75 +287,64 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-
     private void proceso2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso2ActionPerformed
-        // TODO add your handling code here:
         direccionIP = "192.168.1.244";
         puertoEnvia = 20002;        
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso2ActionPerformed
 
     private void bCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCrearActionPerformed
-        // TODO add your handling code here:
         textoMensaje = textoMensajeTF.getText();
         numeroDeProceso = Integer.parseInt(idProceso.getText());
         Mensaje m = new Mensaje(textoMensaje, numeroDeProceso, numeroDeMensaje, CI);        
-        //System.out.println("Mensaje Creado: " + numeroDeProceso + " " + numeroDeMensaje + " " + textoMensaje);
         numeroDeMensaje++;
         inicializarJList.addElement(m.toString());
         creadosList.setModel(inicializarJList);
         relojLogico[numeroDeProceso-1] ++;
         CI.clear();
-        imprimirCI(CI);
-        imprimirVT();
-        
-
-        
-        //System.out.println(puerto + " " + numeroDeProceso);
-        
-        
+        printCI(CI);
+        printVT();
     }//GEN-LAST:event_bCrearActionPerformed
 
     private void proceso1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso1ActionPerformed
-        // TODO add your handling code here:
         direccionIP = "192.168.1.83";
         puertoEnvia = 20001;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso1ActionPerformed
 
     private void proceso5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso5ActionPerformed
-        // TODO add your handling code here:
         direccionIP = "localhost";
         puertoEnvia = 20005;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso5ActionPerformed
 
     private void proceso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso3ActionPerformed
-        // TODO add your handling code here:
-        direccionIP = "localhost";
+         direccionIP = "localhost";
         puertoEnvia = 20003;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso3ActionPerformed
 
     private void proceso4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso4ActionPerformed
-        // TODO add your handling code here:
         direccionIP = "localhost";
         puertoEnvia = 20004;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso4ActionPerformed
 
     private void proceso6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso6ActionPerformed
-        // TODO add your handling code here:
         direccionIP = "localhost";
         puertoEnvia = 20006;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso6ActionPerformed
-public void Enviar(String mensaje){
+    
+    public void Enviar(String mensaje){
     Comunicacion comunicar = new Comunicacion(mensaje);
     comunicar.Enviar(direccionIP, puertoEnvia);
 }
-public void imprimirCI(ArrayList<Integer> ci) {
+    public void Recibir(){
+    Comunicacion comunicar2 = new Comunicacion();
+    comunicar2.Recibir(puerto);   
+}
+    public void printCI(ArrayList<Integer> ci) {
     String c = "";
         if (ci.isEmpty()) {
             CITA.append("0");
@@ -377,11 +353,10 @@ public void imprimirCI(ArrayList<Integer> ci) {
         for (int i = 0; i < ci.size(); i++) {
             c = c + "," + ci.get(i);
         }
-
         CITA.append(c);
         CITA.append(System.getProperty("line.separator"));
 }
-public void imprimirVT(){
+    public void printVT(){
     for (int i = 0; i < relojLogico.length; i++) {
         vt = vt +", " + relojLogico[i];        
     }
@@ -389,18 +364,20 @@ public void imprimirVT(){
     this.relojLogicoTA.append(System.getProperty("line.separator"));
     vt = "";
 }
-public void imprimirEntrega(ArrayList<Mensaje> x){
+    public void printDelivery(ArrayList<Mensaje> x){
     this.entregadosTA.setText("");
     for (int i = 0; i < x.size(); i++) {
         this.entregadosTA.append(x.get(i).getNumeroDeProceso() + "," + x.get(i).getNumeroDeMensaje() + "," + x.get(i).getTextoMensaje() + "," + x.get(i).getHM());
         this.entregadosTA.append(System.getProperty("line.separator"));
     } 
 }
-public void Recibir(){
-    Comunicacion comunicar2 = new Comunicacion();
-    comunicar2.Recibir(puerto);
-    
-}
+    public void printWaiting(ArrayList<Mensaje> m) {
+        this.esperaTA.setText("");
+        for (int i = 0; i < m.size(); i++) {
+            this.esperaTA.append(m.get(i).getNumeroDeProceso() + "," + m.get(i).getNumeroDeMensaje() + "," + m.get(i).getTextoMensaje() + "," + m.get(i).getHM());
+            this.esperaTA.append(System.getProperty("line.separator"));
+        }
+    }
 
     /**
      * @param args the command line arguments
