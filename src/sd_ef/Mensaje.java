@@ -14,6 +14,30 @@ public class Mensaje {
     private int numeroDeProceso;
     private int numeroDeMensaje;
 
+    public String getTextoMensaje() {
+        return textoMensaje;
+    }
+
+    public void setTextoMensaje(String textoMensaje) {
+        this.textoMensaje = textoMensaje;
+    }
+
+    public int getNumeroDeProceso() {
+        return numeroDeProceso;
+    }
+
+    public void setNumeroDeProceso(int numeroDeProceso) {
+        this.numeroDeProceso = numeroDeProceso;
+    }
+
+    public int getNumeroDeMensaje() {
+        return numeroDeMensaje;
+    }
+
+    public void setNumeroDeMensaje(int numeroDeMensaje) {
+        this.numeroDeMensaje = numeroDeMensaje;
+    }
+
     public Mensaje(String textoMensaje, int numeroDeProceso, int numeroDeMensaje) {
         this.textoMensaje = textoMensaje;
         this.numeroDeProceso = numeroDeProceso;
