@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sd_ef;
 
 import java.util.ArrayList;
@@ -49,8 +44,6 @@ public class Mensaje {
         this.numeroDeMensaje = numeroDeMensaje;
     }
 
-   
-
     public Mensaje(String textoMensaje, int numeroDeProceso, int numeroDeMensaje, ArrayList<Integer> HM) {
         this.textoMensaje = textoMensaje;
         this.numeroDeProceso = numeroDeProceso;
@@ -58,11 +51,9 @@ public class Mensaje {
         for(int variable: HM){
             this.HM.add(variable);
         }
-        //System.out.println(textoMensaje+" "+ numeroDeProceso+" "+ numeroDeMensaje);
     }
 
     public Mensaje(String mensaje) {
-
         String[] partes = mensaje.split("-");
         this.numeroDeProceso = Integer.parseInt(partes[0]);
         this.numeroDeMensaje = Integer.parseInt(partes[1]);
@@ -72,8 +63,6 @@ public class Mensaje {
         }
     }
 
-    
-    
     @Override
     public String toString(){
         String HdeM = " ";
@@ -82,9 +71,6 @@ public class Mensaje {
         }
         String mensajeString = numeroDeProceso + "-" + numeroDeMensaje + "-" + textoMensaje + HdeM;
         return mensajeString;
-        
     }
-    
-    
-    
+ 
 }

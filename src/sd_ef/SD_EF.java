@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sd_ef;
 
 import javax.swing.JOptionPane;
@@ -17,15 +12,12 @@ public class SD_EF {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
         int puerto=0;
         int numeroDeProceso;
         numeroDeProceso = Integer.parseInt(JOptionPane.showInputDialog("Ingresa el numero de proceso que deceas ejecutar"));
-//      
-        
         switch (numeroDeProceso) {
             case 1:
-                puerto = 20001; // Puerto del Proceso 1
+                puerto = 20001;
                 break;
             case 2:
                 puerto = 20002; 
@@ -42,7 +34,6 @@ public class SD_EF {
             case 6:
                 puerto = 20006;
                 break;
-
         }
         Interfaz i = new Interfaz();
         i.setNumeroDeProceso(numeroDeProceso);
@@ -51,5 +42,4 @@ public class SD_EF {
         i.setPuerto(puerto);
         i.Recibir();
     }
-    
 }
