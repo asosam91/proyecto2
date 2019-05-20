@@ -3,11 +3,16 @@ package sd_ef;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -15,19 +20,31 @@ import javax.swing.JLabel;
  */
 public class Interfaz extends javax.swing.JFrame {
 
+    public static JTextArea getEntregadosTA() {
+        return entregadosTA;
+    }
+
+    public static void setEntregadosTA(JTextArea entregadosTA) {
+        Interfaz.entregadosTA = entregadosTA;
+    }
+
+    private int K;
+    private int TK;
+
     private DefaultListModel inicializarJList;
     private int numeroDeProceso;
     private int numeroDeMensaje = 1;
+
     private int[] relojLogico= {0,0,0,0,0,0};
     private int puertoEnvia;
     private int puerto;
     private String direccionIP;
     private String textoMensaje;
     private String vt = "";
-    private ArrayList<Mensaje> mensajesEspera = new ArrayList();
-    private ArrayList<Mensaje> mensajesEntregado = new ArrayList();
-    private ArrayList<Mensaje> mensajesCreado = new ArrayList();
-    private ArrayList<Integer> CI = new ArrayList();
+    private CopyOnWriteArrayList<Mensaje> mensajesEspera = new CopyOnWriteArrayList();
+    private CopyOnWriteArrayList<Mensaje> mensajesEntregado = new CopyOnWriteArrayList();
+    private CopyOnWriteArrayList<Mensaje> mensajesCreado = new CopyOnWriteArrayList();
+    private CopyOnWriteArrayList<Integer> CI = new CopyOnWriteArrayList();
     
     public int getNumeroDeProceso() {
         return numeroDeProceso;
@@ -274,13 +291,14 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(proceso1)
-                    .addComponent(proceso3)
-                    .addComponent(proceso2)
-                    .addComponent(proceso4)
-                    .addComponent(proceso5)
-                    .addComponent(proceso6))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(proceso3)
+                        .addComponent(proceso2)
+                        .addComponent(proceso4)
+                        .addComponent(proceso5)
+                        .addComponent(proceso6)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
@@ -288,7 +306,7 @@ public class Interfaz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void proceso2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso2ActionPerformed
-        direccionIP = "192.168.1.244";
+        direccionIP = "localhost";
         puertoEnvia = 20002;        
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso2ActionPerformed
@@ -307,7 +325,7 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_bCrearActionPerformed
 
     private void proceso1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proceso1ActionPerformed
-        direccionIP = "192.168.1.83";
+        direccionIP = "localhost";
         puertoEnvia = 20001;
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso1ActionPerformed
@@ -336,15 +354,47 @@ public class Interfaz extends javax.swing.JFrame {
         Enviar(creadosList.getSelectedValue());
     }//GEN-LAST:event_proceso6ActionPerformed
     
-    public void Enviar(String mensaje){
-    Comunicacion comunicar = new Comunicacion(mensaje);
-    comunicar.Enviar(direccionIP, puertoEnvia);
-}
-    public void Recibir(){
-    Comunicacion comunicar2 = new Comunicacion();
-    comunicar2.Recibir(puerto);   
-}
-    public void printCI(ArrayList<Integer> ci) {
+
+    public void Enviar(String mensaje) {
+        try {
+            DatagramSocket aSocket = new DatagramSocket();
+            byte[] m = mensaje.getBytes();
+            InetAddress aHost = InetAddress.getByName(direccionIP); // <--- Mi IP
+            int serverPort = puertoEnvia;
+            DatagramPacket request = new DatagramPacket(m, mensaje.length(), aHost, serverPort);
+            aSocket.send(request);
+            aSocket.close();
+        } catch (SocketException ex) {
+            Logger.getLogger(Comunicacion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Comunicacion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Comunicacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void Recibir(int puerto){
+     while (true) {
+            String n = "";
+            try {
+                DatagramSocket aSocket = new DatagramSocket(puerto);
+                byte[] buffer = new byte[1000];
+                while (true) {
+                    DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+                    aSocket.receive(request);
+                    n = new String(request.getData());
+                    Mensaje xx = new Mensaje(n);
+                    evalMessage(xx, 0);
+                }
+            } catch (SocketException e) {
+                System.out.println("Socket: " + e.getMessage());
+            } catch (IOException e) {
+                System.out.println("IO: " + e.getMessage());
+            }
+        }
+    }
+    
+    public void printCI(CopyOnWriteArrayList<Integer> ci) {
     String c = "";
         if (ci.isEmpty()) {
             CITA.append("0");
@@ -356,6 +406,7 @@ public class Interfaz extends javax.swing.JFrame {
         CITA.append(c);
         CITA.append(System.getProperty("line.separator"));
 }
+    
     public void printVT(){
     for (int i = 0; i < relojLogico.length; i++) {
         vt = vt +", " + relojLogico[i];        
@@ -364,24 +415,121 @@ public class Interfaz extends javax.swing.JFrame {
     this.relojLogicoTA.append(System.getProperty("line.separator"));
     vt = "";
 }
-    public void printDelivery(ArrayList<Mensaje> x){
+    
+    public void printDelivery(CopyOnWriteArrayList<Mensaje> x){
     this.entregadosTA.setText("");
     for (int i = 0; i < x.size(); i++) {
-        this.entregadosTA.append(x.get(i).getNumeroDeProceso() + "," + x.get(i).getNumeroDeMensaje() + "," + x.get(i).getTextoMensaje() + "," + x.get(i).getHM());
+        this.entregadosTA.append(x.get(i).getNumeroDeProceso() + "," +  x.get(i).getNumeroDeMensaje() + ","  + x.get(i).getTextoMensaje() + ","  + x.get(i).getHM());
         this.entregadosTA.append(System.getProperty("line.separator"));
-    } 
+        
+    }
+        
 }
-    public void printWaiting(ArrayList<Mensaje> m) {
+    
+    public void printWaiting(CopyOnWriteArrayList<Mensaje> m) {
         this.esperaTA.setText("");
         for (int i = 0; i < m.size(); i++) {
             this.esperaTA.append(m.get(i).getNumeroDeProceso() + "," + m.get(i).getNumeroDeMensaje() + "," + m.get(i).getTextoMensaje() + "," + m.get(i).getHM());
             this.esperaTA.append(System.getProperty("line.separator"));
         }
+    } 
+    //MBCP
+    public void evalMessage(Mensaje m, int i) {
+        if (evalVT(m) && evalHM(m)) {
+            this.relojLogico[m.getNumeroDeProceso() - 1]++;
+            printVT();
+            mensajesEntregado.add(m);
+            printDelivery(this.mensajesEntregado);
+            processVerify(m, CI);
+            reaper(CI, m);
+            printCI(this.CI);
+            if (mensajesEspera.stream().filter(a -> a.getNumeroDeProceso() == m.getNumeroDeProceso() && a.getNumeroDeMensaje() == m.getNumeroDeMensaje()).count() == 1) {
+                mensajesEspera.remove(i);
+            }
+            if (!mensajesEspera.isEmpty()) {
+                evalBufferMessage();
+            }
+        } else {
+            if (mensajesEspera.stream().filter(a -> a.getNumeroDeProceso() == m.getNumeroDeProceso() && a.getNumeroDeMensaje() == m.getNumeroDeMensaje()).count() == 0) {
+                mensajesEspera.add(m);
+            }
+        }
+        printWaiting(mensajesEspera);
     }
+    
+    public boolean evalVT(Mensaje m) {
+        boolean eval = true;
+        if (this.relojLogico[m.getNumeroDeProceso() - 1] + 1 == m.getNumeroDeMensaje()) {
+            eval = true;
+        } else {
+            eval = false;
+        }
+        return eval;
+    } 
 
+    public boolean evalHM(Mensaje m) {
+        boolean eval = true;
+        int var = m.getHM().size();
+        if (!m.getHM().isEmpty()) {
+            for (int i = 0; i < var; i = i + 2) {
+                if (m.getHM().get(i + 1) <= this.relojLogico[m.getHM().get(i) - 1]) {
+                    eval = true;
+                } else {
+                    eval = false;
+                    break;
+                }
+            }
+        } else {
+            eval = true;
+        }
+        return eval;
+    }
+    
+    public void processVerify(Mensaje m, CopyOnWriteArrayList<Integer> ci) {
+        if (!ci.isEmpty()) {
+            for (int i = 0; i < ci.size(); i += 2) {
+                if (m.getNumeroDeProceso() == ci.get(i)) {
+                       ci.remove(i+1);
+                       ci.remove(i);
+                }
+            }
+        }
+        ci.add(m.getNumeroDeProceso());
+        ci.add(m.getNumeroDeMensaje());
+    }
+    
+    public void reaper(CopyOnWriteArrayList<Integer> ci, Mensaje m) {
+        if (!ci.isEmpty()) {
+            for (int i = 0; i < m.getHM().size(); i += 2) {
+                for (int j = 0; j < ci.size(); j += 2) {
+                    if (ci.get(j) == m.getHM().get(i) && ci.get(j + 1) == m.getHM().get(i + 1)) {
+                        ci.set(j, -1);
+                        ci.set(j + 1, -1);
+                    }
+                }
+            }
+            for (int i = 0; i < ci.size(); i++) {
+                if (ci.get(i) == -1) {
+                    ci.remove(i);
+                    i--;
+                }
+            }
+        }
+    }
+    
+    public void evalBufferMessage() {
+        String var = "";
+        for (int i = 0; i < mensajesEspera.size(); i++) {
+            var = mensajesEspera.get(i).toString();
+            Mensaje m1 = new Mensaje(var);
+            evalMessage(m1, i);
+        }
+    }
     /**
      * @param args the command line arguments
      */
+    
+    //MBCP#
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -418,7 +566,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextArea CITA;
     private javax.swing.JButton bCrear;
     private javax.swing.JList<String> creadosList;
-    private javax.swing.JTextArea entregadosTA;
+    private static javax.swing.JTextArea entregadosTA;
     private javax.swing.JTextArea esperaTA;
     private javax.swing.JLabel idProceso;
     private javax.swing.JLabel jLabel1;

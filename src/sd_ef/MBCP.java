@@ -3,31 +3,34 @@ package sd_ef;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JTextArea;
 
 /**
  *
  * @author adriano
  */
-public class MBCP extends Interfaz{
+public class MBCP {
     private int[] VT = {0, 0, 0, 0, 0, 0};
     private int K;
     private int TK;
-    private ArrayList<Mensaje> createdMessage = new ArrayList<Mensaje>();
-    private ArrayList<Mensaje> receivedMessage = new ArrayList<Mensaje>();
-    private ArrayList<Mensaje> waitingMessage = new ArrayList<Mensaje>();
-    private ArrayList<Integer> CI = new ArrayList<Integer>();
+    private CopyOnWriteArrayList<Mensaje> createdMessage = new CopyOnWriteArrayList<Mensaje>();
+    private CopyOnWriteArrayList<Mensaje> receivedMessage = new CopyOnWriteArrayList<Mensaje>();
+    private CopyOnWriteArrayList<Mensaje> waitingMessage = new CopyOnWriteArrayList<Mensaje>();
+    private CopyOnWriteArrayList<Integer> CI = new CopyOnWriteArrayList<Integer>();
 
     public MBCP() {
+        
     }
     public void evalMessage(Mensaje m, int i) {
+        Interfaz o = new Interfaz();
         if (evalVT(m) && evalHM(m)) {
             this.VT[m.getNumeroDeProceso() - 1]++;
-            printVT();
+            o.printVT();
             receivedMessage.add(m);
-            printDelivery(receivedMessage);
+            o.printDelivery(this.receivedMessage);
             processVerify(m, CI);
             reaper(CI, m);
-            printCI(this.CI);
+            o.printCI(this.CI);
             if (waitingMessage.stream().filter(a -> a.getNumeroDeProceso() == m.getNumeroDeProceso() && a.getNumeroDeMensaje() == m.getNumeroDeMensaje()).count() == 1) {
                 waitingMessage.remove(i);
             }
@@ -39,27 +42,23 @@ public class MBCP extends Interfaz{
                 waitingMessage.add(m);
             }
         }
-        printWaiting(waitingMessage);
+        o.printWaiting(waitingMessage);
     }
     
+    
     public boolean evalVT(Mensaje m) {
-        int n = 0;
         boolean eval = true;
         if (this.VT[m.getNumeroDeProceso() - 1] + 1 == m.getNumeroDeMensaje()) {
             eval = true;
+//            System.out.println(m.getNumeroDeProceso());
         } else {
             eval = false;
         }
-        if (eval == true) {
-            n = 1;
-        } else {
-            n = 0;
-        }
         return eval;
+        
     } 
 
     public boolean evalHM(Mensaje m) {
-        int n = 0;
         boolean eval = true;
         int var = m.getHM().size();
         if (!m.getHM().isEmpty()) {
@@ -73,15 +72,10 @@ public class MBCP extends Interfaz{
         } else {
             eval = true;
         }
-        if (eval == true) {
-            n = 1;
-        } else {
-            n = 0;
-        }
         return eval;
     }
     
-    public void processVerify(Mensaje m, ArrayList<Integer> ci) {
+    public void processVerify(Mensaje m, CopyOnWriteArrayList<Integer> ci) {
         if (!ci.isEmpty()) {
             for (int i = 0; i < ci.size(); i += 2) {
                 if (m.getNumeroDeProceso() == ci.get(i)) {
@@ -94,7 +88,7 @@ public class MBCP extends Interfaz{
         ci.add(m.getNumeroDeMensaje());
     }
     
-    public void reaper(ArrayList<Integer> ci, Mensaje m) {
+    public void reaper(CopyOnWriteArrayList<Integer> ci, Mensaje m) {
         if (!ci.isEmpty()) {
             for (int i = 0; i < m.getHM().size(); i += 2) {
                 for (int j = 0; j < ci.size(); j += 2) {

@@ -1,6 +1,7 @@
 package sd_ef;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -10,7 +11,7 @@ public class Mensaje {
     private String textoMensaje;
     private int numeroDeProceso;
     private int numeroDeMensaje;
-    private ArrayList<Integer> HM = new ArrayList();
+    private CopyOnWriteArrayList<Integer> HM = new CopyOnWriteArrayList();
 
     public String getTextoMensaje() {
         return textoMensaje;
@@ -20,11 +21,11 @@ public class Mensaje {
         this.textoMensaje = textoMensaje;
     }
 
-    public ArrayList<Integer> getHM() {
+    public CopyOnWriteArrayList<Integer> getHM() {
         return HM;
     }
 
-    public void setHM(ArrayList<Integer> HM) {
+    public void setHM(CopyOnWriteArrayList<Integer> HM) {
         this.HM = HM;
     }
 
@@ -44,7 +45,7 @@ public class Mensaje {
         this.numeroDeMensaje = numeroDeMensaje;
     }
 
-    public Mensaje(String textoMensaje, int numeroDeProceso, int numeroDeMensaje, ArrayList<Integer> HM) {
+    public Mensaje(String textoMensaje, int numeroDeProceso, int numeroDeMensaje, CopyOnWriteArrayList<Integer> HM) {
         this.textoMensaje = textoMensaje;
         this.numeroDeProceso = numeroDeProceso;
         this.numeroDeMensaje = numeroDeMensaje;
@@ -69,8 +70,8 @@ public class Mensaje {
         for (int i = 0; i < HM.size(); i++) {
             HdeM = HdeM + "-" + HM.get(i);
         }
-        String mensajeString = numeroDeProceso + "-" + numeroDeMensaje + "-" + textoMensaje + HdeM;
-        return mensajeString;
+        String mensajeString = numeroDeProceso + "-" + numeroDeMensaje + "-" + textoMensaje;
+        return mensajeString + HdeM;
     }
  
 }

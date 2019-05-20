@@ -14,7 +14,7 @@ public class SD_EF {
     public static void main(String[] args) {
         int puerto=0;
         int numeroDeProceso;
-        numeroDeProceso = Integer.parseInt(JOptionPane.showInputDialog("Ingresa el numero de proceso que deceas ejecutar"));
+        numeroDeProceso = Integer.parseInt(JOptionPane.showInputDialog("Ingresa el numero de proceso que deseas ejecutar"));
         switch (numeroDeProceso) {
             case 1:
                 puerto = 20001;
@@ -40,6 +40,6 @@ public class SD_EF {
         i.setIdProceso(numeroDeProceso);
         i.setVisible(true);
         i.setPuerto(puerto);
-        i.Recibir();
+        i.Recibir(puerto);
     }
 }

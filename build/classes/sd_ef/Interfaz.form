@@ -137,13 +137,15 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="proceso1" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="proceso3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="proceso2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="proceso4" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="proceso5" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="proceso6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="proceso3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="proceso2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="proceso4" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="proceso5" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="proceso6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="25" max="32767" attributes="0"/>
           </Group>
@@ -178,6 +180,9 @@
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

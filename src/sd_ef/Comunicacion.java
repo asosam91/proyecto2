@@ -27,7 +27,7 @@ private String mensaje;
     }
 
     public void Enviar(String ip, int puerto) {
-        System.out.println("Estoy enviando esto: " + mensaje);
+        //System.out.println("Estoy enviando esto: " + mensaje);
         try {
             DatagramSocket aSocket = new DatagramSocket();
             // byte[] m = args[0].getBytes();
@@ -49,7 +49,7 @@ private String mensaje;
     
     
     public void Recibir(int puerto){
-        System.out.println("Estoy escuchando por el puerto: " + puerto);
+        //System.out.println("Estoy escuchando por el puerto: " + puerto);
      while (true) {
             String n = "";
             try {
@@ -59,7 +59,9 @@ private String mensaje;
                     DatagramPacket request = new DatagramPacket(buffer, buffer.length);
                     aSocket.receive(request);
                     n = new String(request.getData());
-                    System.out.println(n);
+//                    System.out.println(n);
+//                    Mensaje xx = new Mensaje(n);
+//                    evalMessage(xx, 0);
                 }
             } catch (SocketException e) {
                 System.out.println("Socket: " + e.getMessage());
